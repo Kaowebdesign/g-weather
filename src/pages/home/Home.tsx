@@ -12,7 +12,7 @@ import { useHomeEf } from './useHomeEf';
 
 const Home: FC = memo(() => {
 
-    const { weather, loading, welcome, setWelcome, handlerLoadWeather } = useHomeEf();
+    const { weather, loading, welcome, setWelcome, handlerLoadWeather, location, errors } = useHomeEf();
 
     return (
        <Container style={styles.container}>
