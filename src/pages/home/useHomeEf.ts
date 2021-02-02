@@ -4,6 +4,7 @@ import {useEffect, useState} from "react";
 import {getData} from "../../api/api";
 // Interfaces
 import {IWeather} from "../../types/weather";
+import * as Location from 'expo-location';
 
 export const useHomeEf = () => {
     //  Set up API
@@ -14,23 +15,52 @@ export const useHomeEf = () => {
     const [weather, setWeather] = useState<IWeather | {}>({});
     const [loading, setLoading] = useState<boolean>(false);
     const [welcome, setWelcome] = useState<boolean>(true);
+    const [location, setLocation] = useState(null);
+    const [errors, setErrors] = useState<string>('');
 
     const handlerLoadWeather = async () => {
         setLoading(true);
         setWelcome(false);
-        const result = await getData(`weather?q=${CITY}&appid=${API_KEY}&units=${UNITS}`);
-        setWeather(result.data || {});
+        if(location) {
+            const { coords: { latitude, longitude } } = location;
+            const result = await getData(`weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=${UNITS}`);
+            setWeather(result.data || {});
+        } else {
+            setErrors('Can not define any location');
+            setWeather({});
+        }   
     }
 
     useEffect(() => {
         setLoading(false);
     },[weather]);
 
+    useEffect(() => {
+        (async () => {
+            const { status } = await Location.requestPermissionsAsync();
+
+            if (status !== 'granted') {
+                setErrors('Permission to access location was denied');
+                return;
+            }
+      
+            const location = await Location.getCurrentPositionAsync();
+            setLocation(location);
+        })();
+    },[]);
+
+    useEffect(() => {
+        
+        
+    },[location])
+
     return {
         weather,
         loading,
         welcome,
         setWelcome,
-        handlerLoadWeather
+        handlerLoadWeather,
+        location,
+        errors
     }
 }
