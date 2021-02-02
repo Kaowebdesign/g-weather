@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "G Weather",
+    "slug": "g-weather",
+    "ios": {
+      "bundleIdentifier": "g-weather-v.0.1",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Allow Expo experiences to use your location"
+      }
+    }
+  }
+}
